@@ -16,6 +16,6 @@ jobs:
             - run: |
                   docker login ghcr.io -u "${GITHUB_REPOSITORY%%/*}" -p "${GITHUB_TOKEN}"
                   docker build -t "ghcr.io/${GITHUB_REPOSITORY}:main" image
-                  docker push "ghcr.io/${GITHUB_REPOSITORY}/main"
+                  docker push "ghcr.io/${GITHUB_REPOSITORY}:main"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
