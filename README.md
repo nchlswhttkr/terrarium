@@ -9,3 +9,9 @@ docker run --rm --publish 7777:7777 \
     --mount "type=bind,src=$PWD/worlds,dst=/terrarium/worlds" \
     terrarium
 ```
+
+```sh
+terraform -chdir=infrastructure init
+terraform -chdir=infrastructure apply
+./start.sh
+```
