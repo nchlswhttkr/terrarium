@@ -4,24 +4,6 @@ resource "aws_s3_bucket" "config" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_policy" "preview_bucket_policy" {
-  bucket = aws_s3_bucket.config.bucket
-  policy = data.aws_iam_policy_document.public_bucket_access.json
-}
-
-# TODO: Disable public access, use task role for access
-data "aws_iam_policy_document" "public_bucket_access" {
-  version = "2012-10-17"
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.config.arn}/*"]
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-  }
-}
-
 resource "aws_efs_file_system" "worlds" {
   availability_zone_name = aws_subnet.main.availability_zone
 

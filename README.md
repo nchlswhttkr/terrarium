@@ -15,3 +15,5 @@ terraform -chdir=infrastructure init
 terraform -chdir=infrastructure apply
 ./start.sh
 ```
+
+<!-- TODO: Add configurable password -->

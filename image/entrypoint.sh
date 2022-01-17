@@ -26,6 +26,7 @@ screen -dm -S terraria terraria/TerrariaServer.bin.x86_64 -config /terrarium/ter
 until ss -lt | grep 0.0.0.0:7777 > /dev/null; do sleep 1; done
 
 echo "Waiting for players to connect..."
+# set timeout for startup
 while get_player_count | grep "No players connected" > /dev/null; do sleep 5; done
 until get_player_count | grep "No players connected" > /dev/null; do get_player_count; sleep 60; done
 

@@ -95,3 +95,22 @@ data "aws_iam_policy_document" "create_logs" {
     resources = ["arn:aws:logs:*:*:*"]
   }
 }
+
+resource "aws_iam_policy" "read_bucket" {
+  policy = data.aws_iam_policy_document.read_bucket.json
+}
+
+resource "aws_iam_role_policy_attachment" "read_bucket" {
+  role = aws_iam_role.task_role.name
+  policy_arn = aws_iam_policy.read_bucket.arn
+}
+
+data "aws_iam_policy_document" "read_bucket" {
+    version = "2012-10-17"
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = ["${aws_s3_bucket.config.arn}/*"]
+  }
+}
