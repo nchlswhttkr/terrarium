@@ -11,15 +11,17 @@ function get_player_count() {
     rm screenlog.*
 }
 
-if [ ! -f terraria.cfg ]; then
-    echo "Could not locate server config, fetching..."
-    mkdir -p ~/.aws
-    echo "
-        [default]
-        credential_source=EcsContainer
-    " > ~/.aws/config
-    aws s3 cp "s3://${CONFIG_S3_BUCKET}/test.cfg" terraria.cfg # TODO: Add logic to grab by variable file name
-fi
+TAILSCALE_AUTHENTICATION_KEY=$(aws ssm get-parameter --with-decryption --name "/terrarium/tailscale-authentication-key" | jq --raw-output ".Parameter.Value")
+tailscaled --tun=userspace-networking & # must be backgrounded
+tailscale up --ssh --authkey "${TAILSCALE_AUTHENTICATION_KEY}"
+
+echo "Fetcing server config ${CONFIG_NAME}"
+mkdir -p ~/.aws
+echo "
+    [default]
+    credential_source=EcsContainer
+" > ~/.aws/config
+aws s3 cp "s3://${CONFIG_S3_BUCKET}/config/${CONFIG_NAME}" terraria.cfg
 
 echo "Starting Terraria server..."
 screen -dm -S terraria terraria/TerrariaServer.bin.x86_64 -config /terrarium/terraria.cfg
