@@ -2,18 +2,15 @@
 
 set -euo pipefail
 
-function get_player_count() {
-    screen -S terraria -X log on
-    screen -S terraria -X stuff "playing\n"
-    sleep 1
-    screen -S terraria -X log off
-    tail -n 2 screenlog.* | head -n -1
-    rm screenlog.*
+function has_active_connections() {
+    if [[ "$(tailscale status --json --active | jq ".Peer | keys | length")" == 0 ]]; then
+        return 1
+    fi
 }
 
 TAILSCALE_AUTHENTICATION_KEY=$(aws ssm get-parameter --with-decryption --name "/terrarium/tailscale-authentication-key" | jq --raw-output ".Parameter.Value")
 tailscaled --tun=userspace-networking & # must be backgrounded
-tailscale up --ssh --authkey "${TAILSCALE_AUTHENTICATION_KEY}"
+tailscale up --ssh --authkey "${TAILSCALE_AUTHENTICATION_KEY}" --hostname "terrarium"
 
 echo "Fetcing server config ${CONFIG_NAME}"
 mkdir -p ~/.aws
@@ -29,8 +26,10 @@ until ss -lt | grep 0.0.0.0:7777 > /dev/null; do sleep 1; done
 
 echo "Waiting for players to connect..."
 # set timeout for startup
-while get_player_count | grep "No players connected" > /dev/null; do sleep 5; done
-until get_player_count | grep "No players connected" > /dev/null; do get_player_count; sleep 60; done
+until has_active_connections; do sleep 5; done
+
+echo "Server is up and running!"
+while has_active_connections; do sleep 60; done
 
 echo "All players disconnected, shutting down..."
 screen -S terraria -X stuff "exit\n"
