@@ -9,6 +9,11 @@ terraform {
       source  = "nicholas.cloud/nchlswhttkr/pass"
       version = ">= 0.1"
     }
+
+    vault = {
+      source  = "hashicorp/vault"
+      version = "~> 3.10"
+    }
   }
 
   required_version = ">= 1.0"
@@ -24,9 +29,19 @@ provider "aws" {
   secret_key = data.pass_password.aws_access_key_secret.password
   default_tags {
     tags = {
-      Project = "terraria.nicholas.cloud"
+      Project = "Terrarium"
     }
   }
+}
+
+provider "vault" {
+  address = "http://phoenix:8200"
+  token   = var.vault_token
+}
+
+variable "vault_token" {
+  description = "The authentication token to use with Hashicorp Vault for credentials"
+  type        = string
 }
 
 data "pass_password" "aws_access_key_id" {

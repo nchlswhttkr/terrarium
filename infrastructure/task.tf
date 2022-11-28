@@ -26,6 +26,12 @@ resource "aws_ecs_task_definition" "terraria" {
       cpu       = 1024
       memory    = 2048
       essential = true
+      portMappings = [
+        {
+          containerPort = 41641
+          protocol      = "udp"
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -101,16 +107,32 @@ resource "aws_iam_policy" "read_bucket" {
 }
 
 resource "aws_iam_role_policy_attachment" "read_bucket" {
-  role = aws_iam_role.task_role.name
+  role       = aws_iam_role.task_role.name
   policy_arn = aws_iam_policy.read_bucket.arn
 }
 
 data "aws_iam_policy_document" "read_bucket" {
-    version = "2012-10-17"
+  version = "2012-10-17"
   statement {
-    actions = [
-      "s3:GetObject"
-    ]
-    resources = ["${aws_s3_bucket.config.arn}/*"]
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.config.arn}/config/*"]
   }
+
+  statement {
+    actions   = ["kms:Decrypt"]
+    resources = [data.aws_kms_key.ssm_default.arn]
+  }
+
+  statement {
+    actions   = ["ssm:GetParameter"]
+    resources = [aws_ssm_parameter.tailscale_authentication_key.arn]
+  }
+}
+
+data "aws_kms_key" "ssm_default" {
+  key_id = "alias/aws/ssm"
+
+  depends_on = [
+    aws_ssm_parameter.tailscale_authentication_key
+  ]
 }

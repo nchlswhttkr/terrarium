@@ -19,24 +19,29 @@ resource "aws_default_security_group" "main" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    protocol    = "tcp"
-    from_port   = 7777
-    to_port     = 7777
-  }
-
-  ingress {
-    self      = true
-    protocol  = -1
-    from_port = 0
-    to_port   = 0
-  }
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all ingress from the same security group"
+    self        = true
     protocol    = -1
     from_port   = 0
     to_port     = 0
+  }
+
+  ingress {
+    description      = "Allow ingress from the Tailscale tailnet"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    protocol         = "udp"
+    from_port        = 41641
+    to_port          = 41641
+  }
+
+  egress {
+    description      = "Allow any and all egress from VPC"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    protocol         = -1
+    from_port        = 0
+    to_port          = 0
   }
 }
 
