@@ -34,3 +34,4 @@ while has_active_connections; do sleep 60; done
 echo "All players disconnected, shutting down..."
 screen -S terraria -X stuff "exit\n"
 while screen -list | grep "terraria" > /dev/null; do sleep 1; done
+tailscale logout
