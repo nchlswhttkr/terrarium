@@ -40,7 +40,7 @@ until has_active_connections; do
         shut_down_server
     fi
     sleep 5;
-    ((CONNECTION_ATTEMPTS++))
+    CONNECTION_ATTEMPTS=$((CONNECTION_ATTEMPTS + 1))
 done
 
 echo "Server is up and running!"
