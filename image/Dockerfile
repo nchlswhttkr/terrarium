@@ -1,5 +1,4 @@
 ARG TERRARIA_VERSION="1449"
-ARG TAILSCALE_VERSION="1.34.1"
 
 FROM ubuntu:focal as base
 RUN apt update && apt install -y curl unzip
@@ -11,8 +10,7 @@ RUN curl --fail --show-error --silent "https://www.terraria.org/api/download/pc-
     chmod +x ${TERRARIA_VERSION}/Linux/TerrariaServer.bin.x86_64
 
 FROM base as tailscale
-ARG TAILSCALE_VERSION
-RUN curl --fail --show-error --silent "https://pkgs.tailscale.com/stable/tailscale_${TAILSCALE_VERSION}_amd64.tgz" > tailscale.tar.gz && \
+RUN curl --fail --location --show-error --silent "https://pkgs.tailscale.com/stable/tailscale_latest_amd64.tgz" > tailscale.tar.gz && \
     tar -xf tailscale.tar.gz --strip-components=1
 
 FROM base as awscli
