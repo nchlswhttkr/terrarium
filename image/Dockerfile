@@ -21,7 +21,7 @@ RUN curl --fail --show-error --silent "https://awscli.amazonaws.com/awscli-exe-l
 FROM ubuntu:focal
 ARG TERRARIA_VERSION
 RUN apt update && \
-    apt install -y jq screen && \
+    apt install -y iproute2 jq screen && \
     mkdir -p /terrarium
 COPY --from=terraria ./${TERRARIA_VERSION}/Linux/ /terrarium/terraria/
 COPY --from=tailscale ./tailscale ./tailscaled /usr/local/bin/
