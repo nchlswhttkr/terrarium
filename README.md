@@ -1,6 +1,6 @@
 # terrarium
 
-A little Terraria server on demand.
+A little on-demand Terraria server. It runs on AWS Fargate and accepts connection from my [Tailscale](https://tailscale.com/) tailnet.
 
 ```sh
 # Deploy infra
@@ -12,5 +12,3 @@ make infra
 # Connect to the server console
 make console
 ```
-
-<!-- TODO: Add configurable password -->
