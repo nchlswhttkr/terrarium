@@ -16,7 +16,7 @@ RUN curl --fail --location --show-error --silent "https://pkgs.tailscale.com/sta
 FROM base as awscli
 RUN curl --fail --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" > awscliv2.zip && \
     unzip -q awscliv2.zip && \
-    ./aws/install
+    ./aws/install --bin-dir "/aws-cli-bin/"
 
 FROM ubuntu:focal
 ARG TERRARIA_VERSION
@@ -26,7 +26,7 @@ RUN apt update && \
 COPY --from=terraria ./${TERRARIA_VERSION}/Linux/ /terrarium/terraria/
 COPY --from=tailscale ./tailscale ./tailscaled /usr/local/bin/
 COPY --from=awscli /usr/local/aws-cli/ /usr/local/aws-cli/
-COPY --from=awscli /usr/local/bin/aws /usr/local/bin/
+COPY --from=awscli /aws-cli-bin/ /usr/local/bin/
 WORKDIR /terrarium
 ADD entrypoint.sh ./
 CMD /bin/bash entrypoint.sh
