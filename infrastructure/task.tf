@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "terrarium" {
 }
 
 resource "aws_ecs_task_definition" "terraria" {
-  family                   = "terraria-server"
+  family                   = "terrarium"
   task_role_arn            = aws_iam_role.task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
   requires_compatibilities = ["FARGATE"]
@@ -58,12 +58,12 @@ resource "aws_ecs_task_definition" "terraria" {
 }
 
 resource "aws_iam_role" "task_role" {
-  name               = "TerrariaTaskRole"
+  name               = "TerrariumTaskRole"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role" "execution_role" {
-  name               = "TerrariaTaskExecutionRole"
+  name               = "TerrariumTaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
