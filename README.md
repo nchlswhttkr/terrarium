@@ -4,11 +4,11 @@ A little on-demand Terraria server. It runs on AWS Fargate and accepts connectio
 
 ```sh
 # Deploy infra
-make infra
+make -C infrastructure
 
 # Start server (using test.cfg as config)
 ./start.sh config/test.cfg
 
 # Connect to the server console
-make console
+./console.sh
 ```

@@ -2,12 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.56.0"
-    }
-
-    pass = {
-      source  = "nicholas.cloud/nchlswhttkr/pass"
-      version = ">= 0.1"
+      version = "~> 3.56"
     }
 
     vault = {
@@ -18,15 +13,19 @@ terraform {
 
   required_version = ">= 1.0"
 
-  backend "local" {
-    path = "/Users/nchlswhttkr/Google Drive/terraform/terrarium.tfstate"
+  backend "s3" {
+    bucket         = "nchlswhttkr-terraform-backend"
+    dynamodb_table = "nchlswhttkr-terraform-backend"
+    key            = "terrarium"
+    region         = "ap-southeast-4"
   }
 }
 
 provider "aws" {
   region     = "ap-southeast-2"
-  access_key = data.pass_password.aws_access_key_id.password
-  secret_key = data.pass_password.aws_access_key_secret.password
+  access_key = data.vault_aws_access_credentials.creds.access_key
+  secret_key = data.vault_aws_access_credentials.creds.secret_key
+  token      = data.vault_aws_access_credentials.creds.security_token
   default_tags {
     tags = {
       Project = "Terrarium"
@@ -34,23 +33,10 @@ provider "aws" {
   }
 }
 
-provider "vault" {
-  address = "http://phoenix:8200"
-  token   = var.vault_token
+data "vault_aws_access_credentials" "creds" {
+  backend = "aws"
+  role    = "Terraform"
+  type    = "sts"
 }
 
-variable "vault_token" {
-  description = "The authentication token to use with Hashicorp Vault for credentials"
-  type        = string
-}
-
-data "pass_password" "aws_access_key_id" {
-  name = "website/aws-access-key-id"
-}
-
-data "pass_password" "aws_access_key_secret" {
-  name = "website/aws-access-key-secret"
-}
-provider "pass" {
-  store = "/Users/nchlswhttkr/Google Drive/.password-store"
-}
+provider "vault" {}
