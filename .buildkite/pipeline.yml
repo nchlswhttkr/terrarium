@@ -1,0 +1,3 @@
+steps:
+    - label: ":docker: Build and push server image"
+      command: .buildkite/build.sh
