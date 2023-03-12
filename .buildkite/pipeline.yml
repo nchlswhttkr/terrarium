@@ -19,4 +19,5 @@ steps:
     - wait
 
     - label: ":terraform: Deploy Terrarium"
+      if: 'build.branch == "main"'
       command: .buildkite/deploy.sh
