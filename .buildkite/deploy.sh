@@ -8,3 +8,4 @@ mv terraform/terraform infrastructure/
 
 cd infrastructure
 ./terraform init
+./terraform apply -auto-approve
