@@ -2,20 +2,6 @@ steps:
     - label: ":docker: Build and push server image"
       command: .buildkite/build.sh
 
-    - label: ":golang: Build custom release of Terraform"
-      command:
-          - git clone https://github.com/hashicorp/terraform.git
-          - cd terraform
-          - go get .
-          - go get -u github.com/aws/aws-sdk-go
-          - go build
-          - cd ..
-          - buildkite-agent artifact upload terraform/terraform
-      plugins:
-          - docker#v5.5.1:
-                image: golang:1.20
-                mount_buildkite_agent: true
-
     - wait
 
     - label: ":terraform: Deploy Terrarium"
