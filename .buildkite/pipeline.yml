@@ -1,6 +1,8 @@
 steps:
     - label: ":docker: Build and push server image"
       command: .buildkite/build.sh
+      env:
+          VAULT_ROLE_ID: 703f9e62-1225-507b-ab21-9b762f8db482
 
     - label: ":golang: Build custom release of Terraform"
       command:
@@ -21,3 +23,5 @@ steps:
     - label: ":terraform: Deploy Terrarium"
       if: 'build.branch == "main"'
       command: .buildkite/deploy.sh
+      env:
+          VAULT_ROLE_ID: 703f9e62-1225-507b-ab21-9b762f8db482
