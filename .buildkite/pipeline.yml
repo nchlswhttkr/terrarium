@@ -10,7 +10,7 @@ steps:
           - cd terraform
           - go get .
           - go get -u github.com/aws/aws-sdk-go
-          - go build
+          - CGO_ENABLED=0 go build
           - cd ..
           - buildkite-agent artifact upload terraform/terraform
       plugins:
