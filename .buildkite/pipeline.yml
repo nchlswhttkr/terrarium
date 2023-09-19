@@ -4,7 +4,7 @@ steps:
 
     - label: ":golang: Build custom release of Terraform"
       command:
-          - git clone https://github.com/hashicorp/terraform.git
+          - git clone --branch v1.5.5 https://github.com/hashicorp/terraform.git
           - cd terraform
           - go get .
           - go get -u github.com/aws/aws-sdk-go

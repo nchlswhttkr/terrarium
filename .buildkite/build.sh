@@ -13,7 +13,7 @@ docker run --rm terrarium tailscale --version
 echo "--- Pushing Terrarium image"
 docker tag terrarium "ghcr.io/nchlswhttkr/terrarium:$BUILDKITE_COMMIT"
 docker tag terrarium "ghcr.io/nchlswhttkr/terrarium:$BUILDKITE_BRANCH"
-GITHUB_ACCESS_TOKEN="$(vault kv get kv -field github_access_token kv/buildkite/terrarium)"
+GITHUB_ACCESS_TOKEN="$(vault kv get -field github_access_token kv/buildkite/terrarium)"
 echo "$GITHUB_ACCESS_TOKEN" | docker login ghcr.io --username nchlswhttkr --password-stdin
 docker push --all-tags ghcr.io/nchlswhttkr/terrarium
 docker logout ghcr.io
